@@ -10,8 +10,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.newalpha.Activities.Activity2;
+import com.example.newalpha.Activities.Activity3;
+import com.example.newalpha.Activities.Activity4;
 import com.example.newalpha.Activities.Activity5;
 import com.example.newalpha.Activities.Activity6;
+import com.example.newalpha.Activities.Activity7;
+import com.example.newalpha.Activities.Activity8;
 import com.example.newalpha.Activities.MainActivity;
 
 public class MasterActivity extends AppCompatActivity
@@ -96,8 +100,12 @@ public class MasterActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case "activity3": //save a picture from gallery in a firebase and show images from fireBase
+                intent = new Intent(this, Activity3.class);
+                startActivity(intent);
                 break;
             case "activity4": //save a picture from camera in a firebase and show images from fireBase
+                intent = new Intent(this, Activity4.class);
+                startActivity(intent);
                 break;
             case "activity5": //Broadcast Receiver
                 intent = new Intent(this, Activity5.class);
@@ -108,8 +116,12 @@ public class MasterActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case "activity7": //get data from a picture (gemini)
+                intent = new Intent(this, Activity7.class);
+                startActivity(intent);
                 break;
             case "activity8": //get data from a site (gemini)
+                intent = new Intent(this, Activity8.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);

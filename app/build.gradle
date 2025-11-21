@@ -3,6 +3,14 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = new File('local.properties')
+if(localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
 android {
     namespace 'com.example.newalpha'
     compileSdk {
@@ -17,6 +25,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [Maps_API_Key: localProperties.getProperty('Maps_API_Key', '')]
+        buildConfigField "String", "Gemini_API_Key", "\"${localProperties.getProperty('Gemini_API_Key', '')}\""
+        buildConfigField "String", "Maps_API_Key", "\"${localProperties.getProperty('Maps_API_Key', '')}\""
+
     }
 
     buildTypes {
@@ -24,6 +36,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -38,6 +53,10 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.firebase.database
     implementation libs.firebase.auth
+    implementation libs.firebase.storage
+    implementation libs.play.services.maps
+    implementation libs.play.services.location
+    implementation libs.generativeai
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
