@@ -43,9 +43,7 @@ public class Activity4 extends MasterActivity {
         imageView = findViewById(R.id.photoImageView);
     }
 
-    /* -------------------------------------------------------
-     *  Upload button clicked → check permission first
-     * ------------------------------------------------------- */
+
     public void upload(android.view.View view) {
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
@@ -54,9 +52,7 @@ public class Activity4 extends MasterActivity {
         openCamera();
     }
 
-    /* -------------------------------------------------------
-     *  Camera Launcher
-     * ------------------------------------------------------- */
+
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -66,9 +62,7 @@ public class Activity4 extends MasterActivity {
         }
     }
 
-    /* -------------------------------------------------------
-     *  Handle permission result
-     * ------------------------------------------------------- */
+    //handle permission
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -82,9 +76,6 @@ public class Activity4 extends MasterActivity {
         }
     }
 
-    /* -------------------------------------------------------
-     *  Handle result from camera
-     * ------------------------------------------------------- */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -120,14 +111,12 @@ public class Activity4 extends MasterActivity {
                     )
                     .addOnProgressListener(snapshot -> {
                         double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                        // Optional: Update UI
+
                     });
         }
     }
 
-    /* -------------------------------------------------------
-     *  Download button clicked
-     * ------------------------------------------------------- */
+
     public void download(android.view.View view) {
         if (fileName == null) {
             Toast.makeText(this, "Upload an image first.", Toast.LENGTH_SHORT).show();

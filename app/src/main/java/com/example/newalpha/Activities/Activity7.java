@@ -28,7 +28,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class Activity7 extends MasterActivity
 {
-    Bitmap imageBitmap;
+
     final int CAMERA_REQUEST_CODE = 1;
     static final int REQUEST_FULL_IMAGE_CAPTURE = 2;
     GeminiManager geminiManager;
@@ -61,6 +61,7 @@ public class Activity7 extends MasterActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Bitmap imageBitmap;
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == CAMERA_REQUEST_CODE)
         {
@@ -90,11 +91,15 @@ public class Activity7 extends MasterActivity
                             Log.e(TAG, "onActivityResult/Error: " + error.getMessage());
                         }
                     });
-                } else {
+                }
+                else
+                {
                     Toast.makeText(this, "No picture was sent.", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Image bitmap is null");
                 }
-            } else {
+            }
+            else
+            {
                 Toast.makeText(this, "No picture was sent.", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Intent data or extras are null");
             }
