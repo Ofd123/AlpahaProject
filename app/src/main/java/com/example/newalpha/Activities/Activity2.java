@@ -45,6 +45,39 @@ public class Activity2 extends MasterActivity
         adapter = new ArrayAdapter<String>(Activity2.this, android.R.layout.simple_spinner_dropdown_item, strs);
         itemsListView.setAdapter(adapter);
 
+        readDataFromFB();
+    }
+    public void readDataFromFB()
+    {
+        strs = new ArrayList<String>();
+        ArrayList<KeyAndVal> values = new ArrayList<KeyAndVal>();
+
+        keyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+
+                    KeyAndVal val = ds.getValue(KeyAndVal.class);
+                    String str = val.getKey() + " : " + val.getVal() + "\n" + val.getID();
+                    strs.add(str);
+                    values.add(val);
+                }
+
+                //add the values to the listview
+                adapter = new ArrayAdapter<String>(Activity2.this, android.R.layout.simple_spinner_dropdown_item, strs);
+                itemsListView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
+                strs.clear();
+                values.clear();
+            }
+        });
     }
 
     public void submitBtn(View view)
@@ -66,37 +99,10 @@ public class Activity2 extends MasterActivity
             keyRef.child(keyAndValue.getID()).setValue(keyAndValue);
 
             //read the data from the realtime database
-            strs = new ArrayList<String>();
-            ArrayList<KeyAndVal> values = new ArrayList<KeyAndVal>();
-
-            keyRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-                {
-                    for (DataSnapshot ds : dataSnapshot.getChildren())
-                    {
-
-                        KeyAndVal val = ds.getValue(KeyAndVal.class);
-                        String str = val.getKey() + " : " + val.getVal() + "\n" + val.getID();
-                        strs.add(str);
-                        values.add(val);
-                    }
-
-                    //add the values to the listview
-                    adapter = new ArrayAdapter<String>(Activity2.this, android.R.layout.simple_spinner_dropdown_item, strs);
-                    itemsListView.setAdapter(adapter);
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError)
-                {
-                    strs.clear();
-                    values.clear();
-                }
-            });
+            readDataFromFB();
 
         }
-
+        keyEt.setText("");
+        valEt.setText("");
     }
 }

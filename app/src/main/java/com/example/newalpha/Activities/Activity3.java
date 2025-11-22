@@ -55,7 +55,7 @@ public class Activity3 extends MasterActivity
     {
         try {
             Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, REQUEST_PICK_IMAGE);
         }
         catch (Exception e)
         {
@@ -66,6 +66,11 @@ public class Activity3 extends MasterActivity
 
     public void download(View view)
     {
+        if (fileName == null || fileName.isEmpty())
+        {
+            Toast.makeText(this, "Please upload an image first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         StorageReference refFile = refStorage.child("images/" + fileName);
         final long MAX_SIZE = 1024 * 1024;
         refFile.getBytes(MAX_SIZE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -92,22 +97,22 @@ public class Activity3 extends MasterActivity
         {
             try{
                 final Uri imageUri = data.getData();
-                uploadImage(imageUri);
-                //got from stack overflow
 //                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
 //                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 //                imageView.setImageBitmap(selectedImage);
+
+                uploadImage(imageUri);
             }
             catch(Exception e)
             {
                 e.printStackTrace();
                 Log.i("Error", e.toString());
+                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
             }
         }
         else
         {
             Toast.makeText(this, "No Image Selected", Toast.LENGTH_SHORT).show();
-//            Log.i("Error", "No Image Selected");
         }
 
 

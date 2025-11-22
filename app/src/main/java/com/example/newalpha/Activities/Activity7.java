@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 
@@ -46,10 +47,8 @@ public class Activity7 extends MasterActivity
         dataTV = findViewById(R.id.dataTV);
         imageButton = findViewById(R.id.imageButton);
 
-
-
-
     }
+
     public void takeAPic(View view)
     {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -63,35 +62,42 @@ public class Activity7 extends MasterActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if((resultCode == RESULT_OK) && (requestCode == REQUEST_FULL_IMAGE_CAPTURE))
+        if (resultCode == RESULT_OK && requestCode == CAMERA_REQUEST_CODE)
         {
-            ProgressDialog pd = new ProgressDialog(this);
-            pd.setTitle("Uploading...");
-            pd.show();
-            Uri imageUri = data.getData();
+            if (data != null && data.getExtras() != null) {
+                imageBitmap = (Bitmap) data.getExtras().get("data");
 
+                if (imageBitmap != null) {
+                    imageButton.setImageBitmap(imageBitmap);
 
-            imageBitmap = BitmapFactory.decodeFile(imageUri.getPath());
-            imageButton.setImageBitmap(imageBitmap);
-            String prompt = GET_DATA_FROM_IMAGE;
-            geminiManager.sendTextWithPhotoPrompt(prompt, imageBitmap, new GeminiCallback() {
-                @Override
-                public void onSuccess(String result)
-                {
-                    pd.dismiss();
-                    dataTV.setText(result);
+                    ProgressDialog pd = new ProgressDialog(this);
+                    pd.setTitle("Processing Image...");
+                    pd.show();
+
+                    String prompt = GET_DATA_FROM_IMAGE;
+                    geminiManager.sendTextWithPhotoPrompt(prompt, imageBitmap, new GeminiCallback() {
+                        @Override
+                        public void onSuccess(String result)
+                        {
+                            pd.dismiss();
+                            dataTV.setText(result);
+                        }
+                        @Override
+                        public void onFailure(Throwable error)
+                        {
+                            pd.dismiss();
+                            dataTV.setText("Error: " + error.getMessage());
+                            Log.e(TAG, "onActivityResult/Error: " + error.getMessage());
+                        }
+                    });
+                } else {
+                    Toast.makeText(this, "No picture was sent.", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Image bitmap is null");
                 }
-                @Override
-                public void onFailure(Throwable error)
-                {
-                    pd.dismiss();
-                    dataTV.setText("Erorr:" + error.getMessage());
-                    Log.e(TAG, "onActivityResult/Error: " + error.getMessage());
-                }
-            });
+            } else {
+                Toast.makeText(this, "No picture was sent.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Intent data or extras are null");
+            }
         }
     }
-
-
-
 }
