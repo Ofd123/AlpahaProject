@@ -1,43 +1,30 @@
 package com.example.newalpha.GeminiRelevant;
 
-public class Prompts
-{
+public class Prompts {
     public static final String GET_DATA_FROM_SITE = "Act as a professional product data extractor. Analyze the main product for sale at the provided URL. Please extract and list the following details: Brand, Model Name, Specific Color, Dimensions/Sizes, Material, Price, and a brief Description. If any specific detail is missing, explicitly state 'Not specified'. Please extract the data ";
-    public static final String GET_DATA_FROM_IMAGE = "על סמך ניתוח חזותי מעמיק של התמונה, להלן הדוח המפורט עבור פריט ההנעלה המופיע בה:\n" +
+    public static final String GET_DATA_FROM_IMAGE = "Act as an **Expert Product Researcher and Visual Analyst**, capable of identifying and detailing any item (including footwear, electronics, furniture, machinery, or art).\n" +
             "\n" +
-            "### 1. זיהוי (Identification)\n" +
-            "* **המותג:** **Adidas** (אדידס) – מזוהה בבירור לפי שלושת הפסים (Three Stripes) בצד הנעל ולוגו ה\"Trefoil\" (העלה) שניתן להבחין בו על העקב והלשונית.\n" +
-            "* **הדגם:** הסבירות הגבוהה ביותר היא שמדובר ב-**Adidas Drop Step Low**.\n" +
-            "    * *הערה:* קיימים דגמים דומים מאוד בסדרת ה-\"Court\" של אדידס (כמו ה-Forum Low או ה-Entrap), אך חיתוכי העור בצדדים, העיצוב של העקב והמראה ה\"נפוח\" של הצווארון אופייניים מאוד לדגם ה-Drop Step.\n" +
-            "* **מספר דגם/סדרה:** לא ניתן לראות את התווית הפנימית, אך הדגם שייך לקטגוריית ה-Originals של אדידס.\n" +
+            "Analyze the central item in the attached image thoroughly. Provide the most in-depth report possible, covering technical specifications, history, and functional purpose.\n" +
             "\n" +
-            "### 2. עיצוב וחומרים (Design & Materials)\n" +
-            "* **צבעים:** שילוב קלאסי של **שחור ולבן** (לרוב מוגדר כ-Core Black / Cloud White). הגפה (החלק העליון) שחורה ברובה, עם פסים לבנים, עקב לבן וסוליית ביניים לבנה.\n" +
-            "* **חומרים:**\n" +
-            "    * **גפה (Upper):** נראית עשויה שילוב של **עור סינתטי** ו/או עור מצופה. ישנם אלמנטים של ריפוד עבה באזור הקרסול.\n" +
-            "    * **סוליה:** גומי עמיד (Cupsole).\n" +
-            "* **סגנון עיצובי:** סגנון **רטרו-כדורסל** משנות ה-80 וה-90. הנעל מתאפיינת במראה \"צ'אנקי\" (Chunky) ומסיבי יחסית, עם שכבות (Overlays) מרובות התורמות למראה הבולט והספורטיבי.\n" +
+            "Please structure your report clearly using the following mandatory sections:\n" +
             "\n" +
-            "### 3. פונקציונליות וייעוד (Functionality & Purpose)\n" +
-            "* **ייעוד מקורי:** העיצוב שואב השראה מנעלי כדורסל מקצועיות של העבר, שנועדו לספק יציבות ותמיכה בקרסול על המגרש.\n" +
-            "* **שימוש בפועל כיום:** **לייף-סטייל (Lifestyle) ואופנת רחוב.** זוהי נעל המיועדת להליכה יומיומית, עבודה או בילוי. היא אינה מומלצת לריצה או לפעילות ספורטיבית אינטנסיבית מודרנית (כיוון שהיא כבדה יותר ופחות מאווררת מנעלי ספורט טכנולוגיות חדשות), אך מצוינת לשימוש יומיומי (Casual).\n" +
+            "1.  **Precise Identification:**\n" +
+            "    * **Brand & Manufacturer:** (e.g., Nike, Sony, Herman Miller)\n" +
+            "    * **Exact Model Name/Number:** (Provide the specific name and/or series number)\n" +
+            "    * **Estimated Release Year/Era:** (When was this product introduced?)\n" +
             "\n" +
-            "### 4. מפרט טכני וייחודיות (Technical Specs)\n" +
-            "* **מבנה:** סוליית Cupsole המעניקה עמידות גבוהה מפני שחיקה.\n" +
-            "* **נוחות:** דגם ה-Drop Step ידוע בצווארון המרופד שלו (Padded Collar) באזור הקרסול, שנועד למנוע שפשופים ולתת תחושת \"חיבוק\" לרגל.\n" +
-            "* **אוורור:** ניתן להבחין בחורים קטנים (Perforations) באזור קופסת הבהונות (Toe box), שנועדו לאפשר זרימת אוויר, תכונה קלאסית בנעלי כדורסל.\n" +
-            "* **מצב הפריט בתמונה:** הנעל נראית משומשת. ניתן לראות קמטים באזור האצבעות (Creasing), השרוכים פרומים ומונחים על הרצפה, ויש סימני שימוש קלים על הסוליה.\n" +
+            "2.  **Aesthetics and Materials:**\n" +
+            "    * **Primary Materials:** (e.g., specific plastics, type of leather, metal composition)\n" +
+            "    * **Colorway:** (Specify the official color name if known, or a detailed description)\n" +
+            "    * **Design Language:** (Is it minimalist, industrial, retro, etc.?)\n" +
             "\n" +
-            "### 5. הקשר וערך (Context & Value)\n" +
-            "* **נדירות:** **פריט נפוץ (General Release).** זהו דגם פופולרי הנמכר באופן שוטף בחנויות אדידס וברשתות הנעלה. הוא אינו נחשב לפריט אספנות נדיר.\n" +
-            "* **פופולריות:** דגם זה אהוב מאוד בשל המראה הקלאסי שלו שמשתלב טוב עם ג'ינסים ומכנסיים קצרים, והמחיר הנגיש שלו יחסית.\n" +
-            "* **טווח מחירים משוער (חדש):**\n" +
-            "    * המחיר לזוג חדש נע בדרך כלל בין **250 ל-350 ש\"ח** (תלוי במבצעים).\n" +
-            "    * בחו\"ל המחיר נע סביב **$70-$90**.\n" +
-            "* **ערך נוכחי (משומש):** כיוון שזו נעל נפוצה במצב משומש, הערך הכספי שלה בשוק היד-שנייה נמוך יחסית.\n" +
+            "3.  **Functionality and Key Specifications:**\n" +
+            "    * **Primary Use Case:** (What is its core purpose? e.g., Ultra-Marathon Running, Studio Monitoring, Gaming Peripheral)\n" +
+            "    * **Unique Features/Technology:** (Patented technologies, sensor specs, processor/battery details, special mechanisms)\n" +
             "\n" +
-            "---\n" +
+            "4.  **Market Context and Value:**\n" +
+            "    * **Rarity/Collectibility:** (Is this a rare item, a common one, or a collector's piece?)\n" +
+            "    * **Estimated Market Value:** (Current retail price or typical resale/used price estimate)\n" +
             "\n" +
-            "**צעד הבא:** האם תרצה שאחפש לך הוראות ניקוי המתאימות ספציפית לסוג העור והחומרים של הנעל הזו כדי לחדש את המראה שלה?";
-
+            "If any specific data point is uncertain, state your best educated guess based on the visual evidence provided.";
 }
