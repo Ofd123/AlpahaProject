@@ -14,11 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.newalpha.MasterActivity;
 import com.example.newalpha.R;
@@ -31,7 +27,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,9 +37,8 @@ public class Activity6 extends MasterActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
 
     private GoogleMap gMap;
-    TextView distanceTV;
-    EditText searchED;
-    LatLng currentLocation;
+    private TextView distanceTV;
+    private EditText searchED;
 
 
     @Override
@@ -59,91 +53,87 @@ public class Activity6 extends MasterActivity implements OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        enableMyLocation();
-
         gMap = googleMap;
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         gMap.setTrafficEnabled(true);
-        getCurrentLatLng();
+        enableMyLocation();
     }
-    private void enableMyLocation()
-    {
+    private void enableMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request permission
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-        }
-        else if (gMap != null)
-        {
+        } else if (gMap != null) {
+            // Permission is already granted, enable the location layer
             gMap.setMyLocationEnabled(true);
         }
     }
 
-    public void getCurrentLatLng() {
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location == null) {
-                            Toast.makeText(Activity6.this, "Could not get current location. Please ensure location is enabled.", Toast.LENGTH_LONG).show();
-                            return;
-                        }
+    public void search(View view) {
+        String searchString = searchED.getText().toString().trim();
+        if (searchString.isEmpty()) {
+            searchString = LOC;
+        }
 
-                        currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        gMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
-                        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+        // 1. Check for permissions first
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            enableMyLocation(); // Request permissions if not granted
+            Toast.makeText(this, "Location permission needed to perform search.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 2. Get the current location asynchronously
+        String finalSearchString = searchString;
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location == null) {
+                        Toast.makeText(Activity6.this, "Could not get current location. Please ensure location is enabled.", Toast.LENGTH_LONG).show();
+                        return;
                     }
+
+                    LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15));
+
+                    // 3. Perform geocoding and draw route only AFTER location is found
+                    performGeocoding(finalSearchString, currentLatLng);
                 });
     }
 
-    public void search(View view) {
-
-        String search = searchED.getText().toString();
-        if(search == null || search.isEmpty())
-        {
-            search = LOC;
-        }
-        //fusedLocationClient.getLastLocation()
-        //      .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-        //        @Override
-        //      public void onSuccess(Location location) {
-        //        //got the last known location
-        //      if (location != null)
-        //    {
-        //      //create a route
-        //    LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //  gMap.addMarker(new MarkerOptions().position(currentLatLng).title("Current Location"));
-        //gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15));
-        getCurrentLatLng();
+    private void performGeocoding(String locationName, LatLng currentLatLng) {
         Geocoder geocoder = new Geocoder(Activity6.this);
-        try
-        {
-            List<Address> addresses = geocoder.getFromLocationName(search, 1);
-            if (addresses != null && !addresses.isEmpty())
-            {
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(locationName, 1);
+            if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
                 LatLng destinationLatLng = new LatLng(address.getLatitude(), address.getLongitude());
-                gMap.addMarker(new MarkerOptions().position(destinationLatLng).title(search));
+                gMap.addMarker(new MarkerOptions().position(destinationLatLng).title(locationName));
 
+                // Draw the route on the map
                 gMap.addPolyline(new PolylineOptions()
-                        .add(currentLocation, destinationLatLng)
+                        .add(currentLatLng, destinationLatLng)
                         .width(5)
                         .color(Color.RED));
 
+                // Calculate and display distance
                 float[] results = new float[1];
-                Location.distanceBetween(currentLocation.latitude, currentLocation.longitude, destinationLatLng.latitude, destinationLatLng.longitude, results);
+                Location.distanceBetween(currentLatLng.latitude, currentLatLng.longitude, destinationLatLng.latitude, destinationLatLng.longitude, results);
                 float distance = results[0];
-                distanceTV.setText("Distance: " + String.format("%.2f", distance / 1000) + " km");
+                distanceTV.setText(String.format("Distance: %.2f km", distance / 1000));
+            } else {
+                Toast.makeText(this, "Location not found.", Toast.LENGTH_SHORT).show();
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Network error during search.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
@@ -152,9 +142,8 @@ public class Activity6 extends MasterActivity implements OnMapReadyCallback {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
+                // Permission was granted, enable the location layer.
                 enableMyLocation();
-                // You can optionally call search(null) here to immediately perform the search after permission is granted
-                search(null);
             }
             else
             {

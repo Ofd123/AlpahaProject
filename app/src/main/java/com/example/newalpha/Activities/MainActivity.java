@@ -95,7 +95,7 @@ public class MainActivity extends MasterActivity
                         }
                         else if (exp instanceof FirebaseAuthInvalidCredentialsException)
                         {
-                            resultsTV.setText("General authentication failure.");
+                            resultsTV.setText("General authentication failure.\n" + exp.getMessage());
                         }
                         else if (exp instanceof FirebaseNetworkException)
                         {

@@ -62,12 +62,13 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="enter your mail"
-            android:inputType="text" />
+            android:inputType="textEmailAddress" />
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+
     </LinearLayout>
 
     <Space
